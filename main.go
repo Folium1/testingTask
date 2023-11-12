@@ -20,6 +20,13 @@ type Breeds struct {
 	Pattern string `json:"pattern"`
 }
 
+type BreedsWithoutCountry struct {
+	Breed   string `json:"breed"`
+	Origin  string `json:"origin"`
+	Coat    string `json:"coat"`
+	Pattern string `json:"pattern"`
+}
+
 func main() {
 	resp, err := http.Get("https://catfact.ninja/breeds")
 	if err != nil {
@@ -37,9 +44,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	breedsByCountry := make(map[string][]Breeds)
+	breedsByCountry := make(map[string][]BreedsWithoutCountry)
 	for _, breed := range res.Data {
-		breedsByCountry[breed.Country] = append(breedsByCountry[breed.Country], breed)
+		breedsByCountry[breed.Country] = append(breedsByCountry[breed.Country], BreedsWithoutCountry{
+			Breed:   breed.Breed,
+			Origin:  breed.Origin,
+			Coat:    breed.Coat,
+			Pattern: breed.Pattern,
+		})
 	}
 
 	for _, breeds := range breedsByCountry {
